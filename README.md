@@ -1,16 +1,12 @@
 # q8intouch_task
 
-A new Flutter project.
+*Features
+1- add users to top list in screen and remove it
+2- search about any user
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+Bloc architecture pattern with 3 layers :
+  A : Data Layer it contains another 3 layer api service and model and repositories
+  B : Business Logic layer it contains app logics 
+  C : persentation layer it contains all app screens and widgets 
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
