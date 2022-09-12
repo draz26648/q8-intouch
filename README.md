@@ -10,3 +10,10 @@ Bloc architecture pattern with 3 layers :
   B : Business Logic layer it contains app logics 
   C : persentation layer it contains all app screens and widgets 
 
+### fix old code :
+
+1- add Scroll Pagination with Pagination Request
+ <img src="http://i.epvpimg.com/l4Cfdab.png" />
+ 
+ 2- fix top list and add maximum length 10 items only with waring toast 
+ <img src="http://i.epvpimg.com/Inuhgab.png" />
