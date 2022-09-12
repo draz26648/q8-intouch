@@ -6,7 +6,7 @@ import '../basic_models/user_model.dart';
 class UsersModel extends SingleMapper {
   List<Users>? users;
   int? total;
-  int? skip;
+  String? skip;
   int? limit;
   UsersModel({
     this.users,

@@ -2,9 +2,12 @@ import 'package:q8intouch_task/data/api/network.dart';
 import 'package:q8intouch_task/data/models/mapper_models/users_model.dart';
 
 abstract class UsersRepo {
-  static Future<dynamic> getUsers() async {
+  static Future<dynamic> getUsers({
+    required int skippedUsers,
+  }) async {
     Map<String, dynamic> _query = {
       'limit': 10,
+      'skip': skippedUsers.toString(),
     };
     return await NetworkHelper()
         .get(url: 'users', model: UsersModel(), query: _query);

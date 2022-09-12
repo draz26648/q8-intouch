@@ -12,6 +12,14 @@ class UsersLoaded extends UsersState {
   UsersLoaded(this.model);
 }
 
+class UsersEmpty extends UsersState {}
+
 class UsersError extends UsersState {}
 
+class UsersActionSuccess extends UsersState {}
+
 class UsersToggleButtonSuccess extends UsersState {}
+
+class UsersRemoveSuccess extends UsersState {}
+
+class UsersSkippedCountSuccess extends UsersState {}

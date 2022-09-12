@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:q8intouch_task/business_logic/users_cubit/users_cubit.dart';
 import 'package:q8intouch_task/data/models/mapper_models/users_model.dart';
+import 'package:q8intouch_task/presentation/screens/components/saved_item.dart';
 import 'package:q8intouch_task/presentation/widgets/app_loader.dart';
 import 'package:q8intouch_task/presentation/widgets/custom_btn.dart';
 import 'package:q8intouch_task/presentation/widgets/custom_text_field.dart';
@@ -20,7 +21,20 @@ class _AddPlayersScreenState extends State<AddPlayersScreen> {
   @override
   void initState() {
     context.read<UsersCubit>().getUsers();
+    context.read<UsersCubit>().controller = ScrollController()
+      ..addListener(context.read<UsersCubit>().getNextUsers);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    context.read<UsersCubit>().users.clear();
+    context
+        .read<UsersCubit>()
+        .controller
+        .removeListener(context.read<UsersCubit>().getNextUsers);
+    context.read<UsersCubit>().controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -42,7 +56,6 @@ class _AddPlayersScreenState extends State<AddPlayersScreen> {
         listener: (context, state) {
           if (state is UsersLoaded) {
             UsersModel model = state.model as UsersModel;
-            context.read<UsersCubit>().users.clear();
             for (var element in model.users!) {
               context.read<UsersCubit>().users.add(element);
             }
@@ -56,6 +69,7 @@ class _AddPlayersScreenState extends State<AddPlayersScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                //top list view
                 SizedBox(
                   height: 100,
                   child: ListView.builder(
@@ -65,19 +79,50 @@ class _AddPlayersScreenState extends State<AddPlayersScreen> {
                     itemBuilder: (context, index) {
                       return Column(
                         children: [
-                          Container(
-                            width: 50,
-                            height: 50,
-                            margin: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 5),
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: NetworkImage(context
-                                      .read<UsersCubit>()
-                                      .savedUsers[index]
-                                      .image!)),
-                              shape: BoxShape.circle,
-                            ),
+                          Stack(
+                            children: [
+                              Container(
+                                width: 50,
+                                height: 50,
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 5),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.black),
+                                  image: DecorationImage(
+                                      image: NetworkImage(context
+                                          .read<UsersCubit>()
+                                          .savedUsers[index]
+                                          .image!)),
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              //remove button
+                              if (context
+                                          .watch<UsersCubit>()
+                                          .savedUsers
+                                          .length >
+                                      1 &&
+                                  index > 0)
+                                Positioned(
+                                    top: 5,
+                                    right: 10,
+                                    child: InkWell(
+                                      onTap: () {
+                                        context
+                                            .read<UsersCubit>()
+                                            .removeSavedItem(index);
+                                      },
+                                      child: const CircleAvatar(
+                                        radius: 10,
+                                        backgroundColor: Colors.white,
+                                        child: Icon(
+                                          Icons.close,
+                                          color: Colors.red,
+                                          size: 20,
+                                        ),
+                                      ),
+                                    )),
+                            ],
                           ),
                           SizedBox(
                             width: 60,
@@ -116,6 +161,7 @@ class _AddPlayersScreenState extends State<AddPlayersScreen> {
                 Expanded(
                   child: ListView.builder(
                     shrinkWrap: true,
+                    controller: context.watch<UsersCubit>().controller,
                     itemCount: context.watch<UsersCubit>().users.length,
                     itemBuilder: (context, index) {
                       return PlayerItem(
@@ -132,6 +178,20 @@ class _AddPlayersScreenState extends State<AddPlayersScreen> {
                     },
                   ),
                 ),
+                if (context.watch<UsersCubit>().isLoadMoreRunning)
+                  const Center(
+                    child: AppLoader(),
+                  ),
+                if (!context.watch<UsersCubit>().hasNextPage)
+                  const Center(
+                    child: Text(
+                      'there\'s no more users',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 15,
+                      ),
+                    ),
+                  ),
               ],
             ),
           );
